@@ -2,11 +2,11 @@
 """
 Useful functions
 """
-from sqlalchemy import create_engine
+# from sqlalchemy import create_engine
 from json import dumps
 
 
-db_connect = create_engine('sqlite:///movies.db')
+# db_connect = create_engine('sqlite:///movies.db')
 # from User import User
 # from Rating import Rating
 

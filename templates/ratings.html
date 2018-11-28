@@ -1,42 +1,6 @@
-<!DOCTYPE html>
-<html lang="sv">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends "layout.html" %}
+{% block content %}
 
-    <title>Ratings – Recommendation System for Movies</title>
-
-    <link href="{{ url_for('static', filename='lib/bootswatch.css') }}" rel="stylesheet">
-
-    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
-
-</head>
-
-<body role="document">
-<div class="container" role="main">
-    <nav>
-        <ul>
-
-            <li><a href="/ratings">All Ratings</a></li>
-            <li><a href="/">All Users</a></li>
-            <ul>
-
-
-            {% if users %}
-
-            {% for user in users %}
-            <li><a href="/users/{{user[0]}}">{{user[1]}}</a></li>
-
-
-            {% endfor %}
-            {% else %}
-            <p>Couldn't retrieve data</p>
-
-            {% endif %}
-                        </ul>
-        </ul>
-    </nav>
 <div class="row">
     <h1>Ratings</h1>
     <h2>All Ratings</h2>
@@ -62,10 +26,4 @@
         {% endif %}
 
         </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-</body>
-</html>
+        {% endblock %}

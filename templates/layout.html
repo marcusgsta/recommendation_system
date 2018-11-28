@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Recommendation System for Movies</title>
+
+    <link href="{{ url_for('static', filename='lib/bootswatch.css') }}" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+
+</head>
+
+<body role="document">
+<div class="container" role="main">
+
+    <nav>
+        <ul>
+
+            <li><a href="/ratings">All Ratings</a></li>
+        </ul>
+
+            {% if users %}
+            <h2>Euclidean Similarity</h2>
+            <ul>
+            {% for user in users %}
+            <li><a href="/users/{{user[0]}}">{{user[1]}}</a></li>
+            {% endfor %}
+            </ul>
+
+            <h2>Pearson Correlation</h2>
+            <ul>
+            {% for user in users %}
+            <li><a href="/pearson/{{user[0]}}">{{user[1]}}</a></li>
+            {% endfor %}
+            </ul>
+
+            {% else %}
+            <p>Couldn't retrieve data</p>
+
+            {% endif %}
+                        </ul>
+
+    </nav>
+
+    <div class="container">
+      {% block content %}
+      {% endblock %}
+    </div>
+
+    {% block footer %}
+    {% endblock %}

@@ -4,6 +4,7 @@ from flask_restful import Resource, Api
 from sqlalchemy import create_engine
 from json import dumps
 from euclidean import *
+from pearson import *
 import itertools as it
 
 db_connect = create_engine('sqlite:///movies.db')
@@ -11,17 +12,20 @@ app = Flask(__name__, template_folder='templates')
 api = Api(app)
 
 
+# get all users
+def getUsers():
+    conn = db_connect.connect()
+    query5 = conn.execute("select * from users")
+    users = [i for i in query5.cursor.fetchall()]
+    return users
 
 
-class Users(Resource):
+class Welcome(Resource):
     def get(self):
         headers = {'Content-Type': 'text/html'}
         conn = db_connect.connect() # connect to database
-        query = conn.execute("select id, name from users")
-        usernames = {'users': [i for i in query.cursor.fetchall()]}
-        query2 = conn.execute("select * from users")
-        users = [i for i in query2.cursor.fetchall()]
-        return make_response(render_template('index.html', usernames=usernames, users=users),200,headers)
+
+        return make_response(render_template('index.html', users=getUsers()),200,headers)
 
 
 
@@ -77,13 +81,14 @@ class Username(Resource):
 
         ratingsWithWS = []
         # get weighted score (ws)
-        # loop through ratings, check for each rating that user has given, and multiply by her similarity
+        # loop through ratings
         for rating in ratings:
             totalws = 0
             userid = rating[0] - 1
             ws = 0
             # get similarity for user
             simscore = getSimScore(userid, similarities)
+            # multiply by rating to get weighted score
             ws = rating[2] * simscore
             print("Current user:")
             print(userid+1)
@@ -96,6 +101,7 @@ class Username(Resource):
             print("Weighted score:")
             print(str(ws))
 
+            # store important values in a dictionary
             ratingsWithWS.append({
             'userid': userid+1,
             'movie': rating[1],
@@ -117,7 +123,6 @@ class Username(Resource):
             return lambda x: x['similarity'] if x['movie']==movie else 0
 
         # get sum of similarity for all users with matching movies
-
         movies = sorted(set(map(lambda x: x['movie'], newratings)))
         result = [{'movie':movie, 'sumsim': sum(map(get_sim(movie), newratings)), 'sumws':sum(map(get_ws(movie), newratings))} for movie in movies]
 
@@ -159,9 +164,74 @@ class Username(Resource):
         return make_response(render_template('username.html',users=users, username=username, similarities=similarities, ratingsWithWS=newratings, recommended_movies=recommended_movies), 200, headers)
 
 
-api.add_resource(Users, '/') # Route_1
+class Pearson(Resource):
+    def get(self, userid):
+        USERID = userid
+        headers = {'Content-Type': 'text/html'}
+        conn = db_connect.connect()
+
+        # Database calls
+        #userA
+        query = conn.execute("select * from ratings where userid =%d " %int(userid))
+        userA = [i for i in query.cursor.fetchall()]
+        # all ratings
+        query4 = conn.execute("select * from ratings")
+        ratings = [i for i in query4.cursor.fetchall()]
+        # get all users
+        query5 = conn.execute("select * from users")
+        users = [i for i in query5.cursor.fetchall()]
+        # username
+        query3 = conn.execute("select * from users where id =%d " %int(userid))
+        username = {'data': [dict(zip(tuple(query3.keys()), i)) for i in query3.cursor]}
+
+        # Create a nested dictionary containing all critics and their recommendations
+        # First create a list of critics
+        print("critics")
+        newcritics = [critic[0] for critic in users]
+        print(newcritics)
+
+        prefs = {}
+        print("new dict:")
+        for critic in newcritics:
+            critic = str(critic)
+            criticname = str(critic)
+            critic = {}
+            for rating in ratings:
+                criticid = str(rating[0])
+                if criticid == criticname:
+                    critic[rating[1]] = rating[2]
+            prefs[criticname] = critic
+
+        print(prefs)
+
+        usersent = str(userid)
+        rankings, similarities = getRecommendations(prefs, usersent)
+        print(rankings)
+
+        newsims = []
+        for key in similarities:
+            intkey = int(key) - 1
+            newkey = users[intkey][1]
+            # print(newkey)
+            # print(similarities[key])
+            # similarities[newkey] = similarities.pop(key)
+
+            print(newkey)
+            newsims.append((similarities[key], newkey))
+
+        print("newsims")
+        print(newsims)
+
+        newsims.sort( )
+        newsims.reverse( )
+
+        return make_response(render_template('pearson.html',users=users, username=username, similarities=newsims, recommended_movies=rankings), 200, headers)
+
+
+api.add_resource(Welcome, '/') # Route_1
 api.add_resource(Ratings, '/ratings') # Route_2
 api.add_resource(Username, '/users/<userid>') # Route_3
+api.add_resource(Pearson, '/pearson/<userid>') # Route_4
 
 
 if __name__ == '__main__':

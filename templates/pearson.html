@@ -36,8 +36,8 @@
             <th>Similarity</th>
             {% for sim in similarities %}
            <tr>
-           <td>{{sim[0][1]}}</td>
-           <td>{{sim[1]}}</td>
+           <td>{{ sim[1] }}</td>
+           <td>{{ sim[0] }}</td>
            </tr>
            {% endfor %}
 
@@ -50,15 +50,15 @@
             </div>
 
         {% if username %}
-        <h2>Top three recommendations for {{ username.data[0].name }} (Euclidean) </h2>
+        <h2>Top three recommendations for {{ username.data[0].name }} </h2>
 
         {% if recommended_movies %}
         <table>
             <th>Movie</th><th>Score</th>
             {% for row in recommended_movies %}
         <tr>
-            <td>{{ row['movie'] }}</td>
-            <td>{{ row['divbysim'] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[0] }}</td>
         </tr>
             {% endfor %}
         </table>
@@ -68,4 +68,4 @@
         {% endif %}
         {% endif %}
 
-        {% endblock %}
+{% endblock %}
