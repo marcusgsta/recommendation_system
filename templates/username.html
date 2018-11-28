@@ -1,71 +1,63 @@
 {% extends "layout.html" %}
 {% block content %}
-
-
-<div class="row">
-    <h1>Recommendation System for Movies</h1>
-    <h2>Username</h2>
-    <div>
+<section class="section">
 
         {% if username %}
+        <div class="columns">
 
-<table>
-    <th>Id</th>
-    <th>Name</th>
-    <tr>
-          <td>{{username.data[0].id}}</td>
-          <td>{{username.data[0].name}}</td>
-      </tr>
-</table>
+        <div class="column is-5">
 
-        {% else %}
-          <p>Couldn't retrieve data</p>
-        {% endif %}
+        {% if similarities %}
 
-        </div>
-
-        <h2>Similar Users</h2>
-
-        <div>
-
-            {% if similarities %}
-
-        <table>
+        <table class="table is-striped is-hoverable">
+            <thead>
+                <h2 class="title is-4">Similar Users to {{username.data[0].name}} </h2>
+            </thead>
 
             <th>Name</th>
             <th>Similarity</th>
+            <tbody>
+
             {% for sim in similarities %}
+
            <tr>
-           <td>{{sim[0][1]}}</td>
+           <td>{{sim[0]}}</td>
            <td>{{sim[1]}}</td>
            </tr>
            {% endfor %}
-
+        </tbody>
         </table>
 
             {% else %}
               <p>Couldn't retrieve data</p>
             {% endif %}
+        </div><!-- column is-5 -->
 
-            </div>
+        <div class="column is-5">
 
-        {% if username %}
-        <h2>Top three recommendations for {{ username.data[0].name }} (Euclidean) </h2>
 
         {% if recommended_movies %}
-        <table>
+        <table class="table is-striped is-hoverable">
+            <thead>
+                <h2 class="title is-4">Top recommendations for {{ username.data[0].name }}</h2>
+            </thead>
             <th>Movie</th><th>Score</th>
+            <tbody>
             {% for row in recommended_movies %}
         <tr>
             <td>{{ row['movie'] }}</td>
             <td>{{ row['divbysim'] }}</td>
         </tr>
             {% endfor %}
+        </tbody>
         </table>
         {% else %}
         <p>Couldn't retrieve data</p>
 
         {% endif %}
         {% endif %}
+    </div><!-- column is-5 -->
 
+    </div> <!-- columns -->
+    </section>
         {% endblock %}

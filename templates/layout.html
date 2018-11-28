@@ -2,53 +2,89 @@
 <html lang="sv">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Recommendation System for Movies</title>
 
-    <link href="{{ url_for('static', filename='lib/bootswatch.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 
-    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
 
 </head>
 
-<body role="document">
-<div class="container" role="main">
-
-    <nav>
-        <ul>
-
-            <li><a href="/ratings">All Ratings</a></li>
-        </ul>
-
-            {% if users %}
-            <h2>Euclidean Similarity</h2>
-            <ul>
-            {% for user in users %}
-            <li><a href="/users/{{user[0]}}">{{user[1]}}</a></li>
-            {% endfor %}
-            </ul>
-
-            <h2>Pearson Correlation</h2>
-            <ul>
-            {% for user in users %}
-            <li><a href="/pearson/{{user[0]}}">{{user[1]}}</a></li>
-            {% endfor %}
-            </ul>
-
-            {% else %}
-            <p>Couldn't retrieve data</p>
-
-            {% endif %}
-                        </ul>
-
-    </nav>
-
+<body>
     <div class="container">
+        <div class="columns">
+
+            <div class="column is-3">
+
+    <aside class="menu">
+  <p class="menu-label">
+    General
+  </p>
+  <ul class="menu-list">
+    <li><a href="/">Home</a></li>
+    <li><a href="/ratings">All Ratings</a></li>
+  </ul>
+  <p class="menu-label">
+    Algorithms
+  </p>
+  <ul class="menu-list">
+    <li>
+      <a class="is-active">Euclidean Similarity</a>
+      {% if users %}
+      <ul>
+          {% for user in users %}
+        <li><a href="/users/{{user[0]}}">{{user[1]}}</a></li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>Couldn't retrieve users</p>
+      {% endif %}
+    </li>
+
+    <li>
+      <a class="is-active">Pearson Correlation</a>
+      {% if users %}
+      <ul>
+          {% for user in users %}
+        <li><a href="/pearson/{{user[0]}}">{{user[1]}}</a></li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>Couldn't retrieve users</p>
+      {% endif %}
+    </li>
+
+  </ul>
+
+</aside>
+</div><!-- column is-3 -->
+<div class="column is-9">
+
+    <section class="hero is-info welcome is-small">
+                   <div class="hero-body">
+                       <div class="container">
+                           <h1 class="title">
+                               Movie Recommendations
+                           </h1>
+                           {% if algorithm %}
+                           <h2 class="subtitle">
+                               {{ algorithm }}
+                           </h2>
+                           {% endif %}
+                       </div>
+                   </div>
+               </section>
+
+
       {% block content %}
       {% endblock %}
-    </div>
+
+
+</div><!-- column is-9 -->
+</div><!-- columns -->
+
 
     {% block footer %}
     {% endblock %}

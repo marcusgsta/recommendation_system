@@ -1,24 +1,28 @@
 {% extends "layout.html" %}
 {% block content %}
-
-<div class="row">
-    <h1>Ratings</h1>
-    <h2>All Ratings</h2>
+<section class="section">
+<div>
+    <h1 class="title">All Ratings</h1>
     <div>
-
         {% if ratings %}
 
-<table>
+<table class="table is-striped is-hoverable">
+    <thead>
+        <h2 class="subtitle">All Ratings in Database</h2>
+    </thead>
     <th>User Id</th>
     <th>Movie</th>
     <th>Rating</th>
+    <tbody>
           {% for rating in ratings.ratings %}
     <tr>
       <td>{{rating[0]}}</td>
       <td>{{rating[1]}}</td>
       <td>{{rating[2]}}</td>
     </tr>
+
   {% endfor %}
+  </tbody>
 </table>
 
         {% else %}
@@ -26,4 +30,5 @@
         {% endif %}
 
         </div>
+    </section>
         {% endblock %}

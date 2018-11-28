@@ -1,66 +1,53 @@
 {% extends "layout.html" %}
 {% block content %}
 
+<section class="section">
 
-<div class="row">
-    <h1>Recommendation System for Movies</h1>
-    <h2>Username</h2>
-    <div>
+{% if username %}
 
-        {% if username %}
+<div class="columns">
 
-<table>
-    <th>Id</th>
-    <th>Name</th>
-    <tr>
-          <td>{{username.data[0].id}}</td>
-          <td>{{username.data[0].name}}</td>
-      </tr>
-</table>
-
-        {% else %}
-          <p>Couldn't retrieve data</p>
-        {% endif %}
-
-        </div>
-
-        <h2>Similar Users</h2>
-
-        <div>
+<div class="column is-5">
 
             {% if similarities %}
 
-        <table>
-
+        <table class="table is-striped is-hoverable">
+            <thead>
+                <h2 class="title is-4">Similar Users to {{username.data[0].name}} </h2>
+            </thead>
             <th>Name</th>
             <th>Similarity</th>
+            <tbody>
             {% for sim in similarities %}
            <tr>
            <td>{{ sim[1] }}</td>
            <td>{{ sim[0] }}</td>
            </tr>
            {% endfor %}
-
+            </tbody>
         </table>
 
             {% else %}
               <p>Couldn't retrieve data</p>
             {% endif %}
+</div><!-- column is-5 -->
 
-            </div>
-
-        {% if username %}
-        <h2>Top three recommendations for {{ username.data[0].name }} </h2>
+<div class="column is-5">
 
         {% if recommended_movies %}
-        <table>
+        <table class="table is-striped is-hoverable">
+            <thead>
+                <h2 class="title is-4">Top recommendations for {{ username.data[0].name }}</h2>
+            </thead>
             <th>Movie</th><th>Score</th>
+            <tbody>
             {% for row in recommended_movies %}
-        <tr>
-            <td>{{ row[1] }}</td>
-            <td>{{ row[0] }}</td>
-        </tr>
+                <tr>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[0] }}</td>
+                </tr>
             {% endfor %}
+            </tbody>
         </table>
         {% else %}
         <p>Couldn't retrieve data</p>
@@ -68,4 +55,8 @@
         {% endif %}
         {% endif %}
 
+</div><!-- column is-5 -->
+
+</div> <!-- columns -->
+</section>
 {% endblock %}

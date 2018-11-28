@@ -72,7 +72,7 @@ class Username(Resource):
             if (user[0] != username['data'][0]['id']):
                 similarities.append([user, euclidean(userA, userX)])
 
-        print(similarities)
+
         def getSimScore(userid, sims):
             if userid < len(sims):
                 return sims[userid][1]
@@ -90,16 +90,16 @@ class Username(Resource):
             simscore = getSimScore(userid, similarities)
             # multiply by rating to get weighted score
             ws = rating[2] * simscore
-            print("Current user:")
-            print(userid+1)
-            print("Current movie:")
-            print(rating[1])
-            print("Rated:")
-            print(rating[2])
-            print("Users simscore:")
-            print(simscore)
-            print("Weighted score:")
-            print(str(ws))
+            # print("Current user:")
+            # print(userid+1)
+            # print("Current movie:")
+            # print(rating[1])
+            # print("Rated:")
+            # print(rating[2])
+            # print("Users simscore:")
+            # print(simscore)
+            # print("Weighted score:")
+            # print(str(ws))
 
             # store important values in a dictionary
             ratingsWithWS.append({
@@ -111,7 +111,17 @@ class Username(Resource):
             })
 
         similarities = similarities[:3]
-        print("ratings with WS")
+        print("sims")
+
+        # Sort similarities in reverse order
+        newsims = []
+        for sim in similarities:
+            print(sim)
+            newsims.append(tuple((sim[0][1], sim[1])))
+
+        newsims = sorted(newsims, key=lambda x: x[1], reverse=True)
+
+
         # sort ratingsWithWS on film instead of userids
         newratings = sorted(ratingsWithWS, key=lambda k: k['movie'])
 
@@ -134,19 +144,13 @@ class Username(Resource):
         newmovies = sorted(set(map(lambda x: x['movie'], result)))
         newresult = [{'movie':movie, 'divbysim': round(sum(map(getTotalDividedBySumsim(movie), result)),4)} for movie in newmovies]
 
-        print(newresult)
-
         # exclude movies already seen by user
         def getAlreadySeen(userid):
-            print(userid)
             #loop through ratings
             movies = []
             for rating in ratings:
-                print("rating[0]")
-                print(rating[0])
                 userid = int(userid)
                 if rating[0] == userid and any(d['movie'] == rating[1] for d in newresult):
-                    print(rating[1])
                     movies.append(rating[1])
             return movies
 
@@ -154,14 +158,10 @@ class Username(Resource):
         newresult[:] = [d for d in newresult if d.get('movie') not in alreadySeen]
 
         newresult.sort(key = lambda x:x['divbysim'], reverse = True)
-        print(newresult)
-
-        print("alreadySeen")
-        print(alreadySeen)
 
         recommended_movies = newresult[:3]
 
-        return make_response(render_template('username.html',users=users, username=username, similarities=similarities, ratingsWithWS=newratings, recommended_movies=recommended_movies), 200, headers)
+        return make_response(render_template('username.html',users=users, username=username, similarities=newsims, ratingsWithWS=newratings, recommended_movies=recommended_movies, algorithm="Euclidean Distance"), 200, headers)
 
 
 class Pearson(Resource):
@@ -225,7 +225,7 @@ class Pearson(Resource):
         newsims.sort( )
         newsims.reverse( )
 
-        return make_response(render_template('pearson.html',users=users, username=username, similarities=newsims, recommended_movies=rankings), 200, headers)
+        return make_response(render_template('pearson.html',users=users, username=username, similarities=newsims, recommended_movies=rankings, algorithm="Pearson Correlation"), 200, headers)
 
 
 api.add_resource(Welcome, '/') # Route_1

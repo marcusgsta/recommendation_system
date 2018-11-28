@@ -33,6 +33,7 @@ def sim_pearson(prefs,p1,p2):
     if den==0: return 0
 
     r=num/den
+    r=round(r,5)
 
     return r
 
@@ -49,6 +50,7 @@ def getRecommendations(prefs,person,similarity=sim_pearson):
         sim=similarity(prefs,person,other)
         # ignore scores of zero or lower
         if sim<=0: continue
+        sim = round(sim,5)
         # add similarities to a dictionary
         similarities[other] = sim
         for item in prefs[other]:
@@ -65,4 +67,6 @@ def getRecommendations(prefs,person,similarity=sim_pearson):
     # Return the sorted list
     rankings.sort( )
     rankings.reverse( )
-    return rankings, similarities
+    RANKINGS = [(round(ranking[0],5), ranking[1]) for ranking in rankings]
+    
+    return RANKINGS, similarities
